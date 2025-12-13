@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Products - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="bg-gray-900 text-white w-64 flex-shrink-0 flex flex-col transition-all duration-300">
+            <div class="p-4 flex items-center justify-center bg-gray-800">
+                <span class="text-2xl font-bold tracking-wider">Admin<span class="text-blue-500">Panel</span></span>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="index.html"
+                            class="flex items-center px-6 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                            <i class="fas fa-tachometer-alt w-6"></i>
+                            <span class="font-medium">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="users.html"
+                            class="flex items-center px-6 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                            <i class="fas fa-users w-6"></i>
+                            <span class="font-medium">Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="products.html"
+                            class="flex items-center px-6 py-3 bg-gray-800 text-blue-400 border-r-4 border-blue-500">
+                            <i class="fas fa-box w-6"></i>
+                            <span class="font-medium">Products</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="p-4 bg-gray-800">
+                <button id="logoutBtn"
+                    class="flex items-center justify-center w-full px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition text-white font-medium">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6 z-10">
+                <h2 class="text-xl font-semibold text-gray-800">Manage Products</h2>
+                <div class="flex items-center">
+                    <button onclick="openModal()"
+                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition lg:mr-4">
+                        <i class="fas fa-plus mr-2"></i> Add Product
+                    </button>
+                    <span class="text-gray-600 mr-3" id="adminName">Admin</span>
+                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                        A</div>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead class="bg-gray-800 text-white">
+                                <tr>
+                                    <th class="w-16 py-3 px-4 uppercase font-semibold text-sm">Img</th>
+                                    <th class="py-3 px-4 uppercase font-semibold text-sm">Product Name</th>
+                                    <th class="py-3 px-4 uppercase font-semibold text-sm">Category</th>
+                                    <th class="py-3 px-4 uppercase font-semibold text-sm">Price</th>
+                                    <th class="py-3 px-4 uppercase font-semibold text-sm">Stock</th>
+                                    <th class="py-3 px-4 uppercase font-semibold text-sm text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-700" id="productsTableBody">
+                                <!-- Products populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 md:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900" id="modalTitle">Add Product</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <form id="productForm" class="space-y-4">
+                <input type="hidden" id="productId">
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
+                    <input type="text" id="productName"
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Price</label>
+                        <input type="number" step="0.01" id="productPrice"
+                            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Stock</label>
+                        <input type="number" id="productStock"
+                            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+                    <input type="text" id="productCategory"
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                    <textarea id="productDescription"
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 h-24"
+                        required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Image</label>
+                    <input type="file" id="productImage"
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-xs text-gray-500 mt-1">Leave empty to keep current image when editing.</p>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button type="button" onclick="closeModal()"
+                        class="mr-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        id="submitBtn">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('adminToken');
+        if (!token) window.location.href = 'login.html';
+
+        const currentUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        document.getElementById('adminName').textContent = currentUser.firstName || 'Admin';
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            window.location.href = 'login.html';
+        });
+
+        // Fetch Products
+        async function fetchProducts() {
+            try {
+                const response = await fetch('http://localhost:8000/products'); // Public endpoint for getting all
+                const products = await response.json();
+
+                const tbody = document.getElementById('productsTableBody');
+                tbody.innerHTML = '';
+
+                products.forEach(product => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b hover:bg-gray-50';
+                    tr.innerHTML = `
+                        <td class="py-3 px-4">
+                            <img src="${product.productImage ? (product.productImage.startsWith('http') ? product.productImage : 'http://localhost:8000' + product.productImage) : 'https://via.placeholder.com/50'}" class="h-10 w-10 object-cover rounded">
+                        </td>
+                        <td class="py-3 px-4 font-medium">${product.productName}</td>
+                        <td class="py-3 px-4 text-sm text-gray-600">${product.productCategory}</td>
+                        <td class="py-3 px-4 font-bold text-green-600">$${product.productPrice}</td>
+                        <td class="py-3 px-4">${product.productStock}</td>
+                        <td class="py-3 px-4 text-right">
+                            <button onclick='editProduct(${JSON.stringify(product).replace(/'/g, "&#39;")})' class="text-blue-500 hover:text-blue-700 mr-3" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteProduct(${product.id})" class="text-red-500 hover:text-red-700" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('productModal');
+        const form = document.getElementById('productForm');
+        let isEditing = false;
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = 'Add Product';
+            form.reset();
+            document.getElementById('productId').value = '';
+            isEditing = false;
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        function editProduct(product) {
+            modal.classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = 'Edit Product';
+            document.getElementById('productId').value = product.id;
+            document.getElementById('productName').value = product.productName;
+            document.getElementById('productPrice').value = product.productPrice;
+            document.getElementById('productStock').value = product.productStock;
+            document.getElementById('productCategory').value = product.productCategory;
+            document.getElementById('productDescription').value = product.productDescription;
+            isEditing = true;
+        }
+
+        // Form Submit
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('productName', document.getElementById('productName').value);
+            formData.append('productPrice', document.getElementById('productPrice').value);
+            formData.append('productStock', document.getElementById('productStock').value);
+            formData.append('productCategory', document.getElementById('productCategory').value);
+            formData.append('productDescription', document.getElementById('productDescription').value);
+
+            const imageFile = document.getElementById('productImage').files[0];
+            if (imageFile) {
+                formData.append('productImage', imageFile);
+            }
+
+            const productId = document.getElementById('productId').value;
+            const url = isEditing
+                ? `http://localhost:8000/products/${productId}`
+                : 'http://localhost:8000/products/create'; // Updated endpoint for create
+
+            const method = isEditing ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Bearer ${token}` }, // Token is needed now
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Success!');
+                    closeModal();
+                    fetchProducts();
+                } else {
+                    alert(data.message || 'Operation failed');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Server error');
+            }
+        });
+
+        // Delete Product
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure?')) return;
+
+            try {
+                const response = await fetch(`http://localhost:8000/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    fetchProducts();
+                    alert('Product deleted');
+                } else {
+                    alert('Failed to delete');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Server error');
+            }
+        }
+
+        fetchProducts();
+    </script>
+</body>
+
+</html>

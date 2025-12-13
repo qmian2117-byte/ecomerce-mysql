@@ -20,6 +20,7 @@ app.use("/uploads", express.static("uploads")); // serve uploaded images
 // Routes
 app.use('/users', userRouter);
 app.use('/products', productRouter); // products route
+app.use('/admin', require('./router/admin')); // admin route
 
 // Basic test route
 app.get('/', (req, res) => {
